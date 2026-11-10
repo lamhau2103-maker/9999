@@ -184,6 +184,9 @@ export default function App() {
       ? ((currentPrice - averagePriceExact) / averagePriceExact) * 100
       : 0;
 
+  // 5. Tổng số tiền đã được tính lời lỗ còn lại = Tổng tiền đã bỏ ra + Lời / Lỗ
+  const totalAfterProfitLoss: number = hasCurrentPrice ? totalCost + profitLossAmount : 0;
+
   // ============================================================================
   // XỬ LÝ THÊM LẦN MUA
   // ============================================================================
@@ -473,10 +476,28 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Giá vốn trung bình */}
-              <div className="backdrop-blur-md bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-orange-500/25 border border-amber-300/40 rounded-2xl p-4 shadow-inner">
-                <div className="text-sm font-semibold text-amber-200">Giá trung bình (vốn)</div>
-                <div className="mt-1 text-2xl sm:text-3xl font-bold text-amber-300 font-mono-num">
+              {/* Ô Tổng số tiền đã được tính lời lỗ còn lại */}
+              <div className="backdrop-blur-md bg-gradient-to-br from-white/[0.12] to-white/[0.04] border border-white/15 rounded-2xl p-4">
+                <div className="text-sm font-medium text-purple-200/80">
+                  Tổng số tiền sau lời / lỗ còn lại
+                </div>
+                {!hasCurrentPrice ? (
+                  <div className="mt-1 text-2xl sm:text-3xl font-bold text-white/40 font-mono-num">
+                    —
+                  </div>
+                ) : (
+                  <div className="mt-1 text-2xl sm:text-3xl font-bold text-amber-200 font-mono-num">
+                    {formatVND(totalAfterProfitLoss)}
+                  </div>
+                )}
+              </div>
+
+              {/* Giá vốn trung bình (thu nhỏ gọn) */}
+              <div className="backdrop-blur-md bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-orange-500/25 border border-amber-300/40 rounded-xl px-3.5 py-2.5 shadow-inner flex items-center justify-between gap-2">
+                <div className="text-xs sm:text-sm font-semibold text-amber-200">
+                  Giá trung bình (vốn)
+                </div>
+                <div className="text-base sm:text-lg font-bold text-amber-300 font-mono-num">
                   {totalPhan > 0 ? `${formatNumberWithDots(averagePriceRounded)} đ/chỉ` : '0 đ/chỉ'}
                 </div>
               </div>
@@ -698,79 +719,81 @@ export default function App() {
                   </p>
                 </div>
               ) : (
-                <ul className="space-y-3">
-                  {purchases.map((item, index) => {
-                    // Thành tiền mỗi lần mua = giá mua × số phân ÷ 10
-                    const itemCost = Math.round((item.pricePerChi * item.phanAmount) / 10);
-                    const isConfirming = confirmDeleteId === item.id;
+                <div className="rounded-2xl border border-white/15 bg-black/25 backdrop-blur-md overflow-hidden">
+                  <ul className="divide-y divide-white/10">
+                    {purchases.map((item, index) => {
+                      // Thành tiền mỗi lần mua = giá mua × số phân ÷ 10
+                      const itemCost = Math.round((item.pricePerChi * item.phanAmount) / 10);
+                      const isConfirming = confirmDeleteId === item.id;
 
-                    return (
-                      <li
-                        key={item.id}
-                        className="backdrop-blur-md bg-gradient-to-r from-white/[0.10] via-white/[0.06] to-white/[0.08] border border-white/15 rounded-2xl p-4 transition-all hover:border-white/30"
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                          <div className="space-y-1.5">
-                            <div className="flex items-baseline gap-2.5 flex-wrap">
-                              <span className="text-sm font-bold text-fuchsia-300 font-mono-num">
+                      return (
+                        <li
+                          key={item.id}
+                          className="px-3.5 py-2.5 transition-colors hover:bg-white/[0.06]"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="min-w-0 flex-1 flex items-center flex-wrap gap-x-2 gap-y-0.5 text-xs sm:text-sm font-mono-num">
+                              <span className="font-bold text-fuchsia-300 shrink-0">
                                 #{purchases.length - index}
                               </span>
-                              <span className="text-xl font-bold text-white font-mono-num">
+                              <span className="font-bold text-white shrink-0">
                                 {formatPhanToChiPhan(item.phanAmount)}
                               </span>
-                              <span className="text-white/40" aria-hidden="true">
+                              <span className="text-white/35" aria-hidden="true">
                                 ·
                               </span>
-                              <span className="text-base font-medium text-purple-100/90 font-mono-num">
+                              <span className="text-purple-100/85 shrink-0">
                                 Giá: {formatNumberWithDots(item.pricePerChi)} đ/chỉ
+                              </span>
+                              <span className="text-white/35" aria-hidden="true">
+                                ·
+                              </span>
+                              <span className="font-bold text-amber-300 shrink-0">
+                                Thành tiền: {formatVND(itemCost)}
                               </span>
                             </div>
 
-                            <div className="text-lg font-bold text-amber-300 font-mono-num">
-                              Thành tiền: {formatVND(itemCost)}
-                            </div>
-                          </div>
-
-                          {/* Nút xoá từng dòng (có xác nhận) */}
-                          <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                            {isConfirming ? (
-                              <div className="flex items-center gap-2 bg-rose-500/25 border border-rose-400/50 px-3 py-1.5 rounded-xl backdrop-blur-md">
-                                <span className="text-sm font-semibold text-rose-100 whitespace-nowrap">
-                                  Xoá dòng này?
-                                </span>
+                            {/* Nút xoá từng dòng (có xác nhận) */}
+                            <div className="flex items-center shrink-0">
+                              {isConfirming ? (
+                                <div className="flex items-center gap-1.5 bg-rose-500/25 border border-rose-400/50 px-2 py-1 rounded-lg backdrop-blur-md">
+                                  <span className="text-xs font-semibold text-rose-100 whitespace-nowrap">
+                                    Xoá dòng này?
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleConfirmDelete(item.id)}
+                                    className="px-2 py-1 bg-rose-500 hover:bg-rose-400 text-white text-xs font-bold rounded flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
+                                  >
+                                    <Check className="w-3.5 h-3.5" />
+                                    <span>Xoá</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setConfirmDeleteId(null)}
+                                    className="px-2 py-1 bg-white/15 hover:bg-white/25 text-white border border-white/25 text-xs font-semibold rounded transition-colors whitespace-nowrap shrink-0"
+                                  >
+                                    Huỷ
+                                  </button>
+                                </div>
+                              ) : (
                                 <button
                                   type="button"
-                                  onClick={() => handleConfirmDelete(item.id)}
-                                  className="min-h-[44px] px-3 py-1.5 bg-rose-500 hover:bg-rose-400 text-white text-sm font-bold rounded-lg flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
+                                  onClick={() => setConfirmDeleteId(item.id)}
+                                  aria-label={`Xoá lần mua ${formatPhanToChiPhan(item.phanAmount)}`}
+                                  className="px-2.5 py-1.5 text-xs font-semibold text-white/80 hover:text-rose-200 bg-white/10 hover:bg-rose-500/30 border border-white/15 hover:border-rose-400/40 rounded-lg flex items-center gap-1 transition-all whitespace-nowrap shrink-0"
                                 >
-                                  <Check className="w-4 h-4" />
+                                  <Trash2 className="w-3.5 h-3.5" />
                                   <span>Xoá</span>
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setConfirmDeleteId(null)}
-                                  className="min-h-[44px] px-3 py-1.5 bg-white/15 hover:bg-white/25 text-white border border-white/25 text-sm font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0"
-                                >
-                                  Huỷ
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => setConfirmDeleteId(item.id)}
-                                aria-label={`Xoá lần mua ${formatPhanToChiPhan(item.phanAmount)}`}
-                                className="min-h-[44px] px-3.5 py-2 text-sm font-semibold text-white/80 hover:text-rose-200 bg-white/10 hover:bg-rose-500/30 border border-white/15 hover:border-rose-400/40 rounded-xl flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                                <span>Xoá</span>
-                              </button>
-                            )}
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               )}
             </section>
           </div>

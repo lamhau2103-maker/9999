@@ -2,5 +2,7 @@
   "name": "Sổ Theo Dõi Vàng 9999",
   "description": "Ứng dụng theo dõi vàng 9999 vật chất, tính giá vốn trung bình và lời lỗ tức thì.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
