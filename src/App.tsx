@@ -459,18 +459,18 @@ export default function App() {
                 Kết quả hiện tại
               </h2>
 
-              {/* Tổng vàng & Tổng tiền */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-                <div className="backdrop-blur-md bg-gradient-to-br from-white/[0.12] to-white/[0.04] border border-white/15 rounded-2xl p-4">
-                  <div className="text-sm font-medium text-purple-200/80">Tổng vàng đang có</div>
-                  <div className="mt-1 text-2xl sm:text-3xl font-bold text-white font-mono-num">
+              {/* Tổng vàng & Tổng tiền (thu nhỏ gọn hơn) */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="backdrop-blur-md bg-gradient-to-br from-white/[0.12] to-white/[0.04] border border-white/15 rounded-xl px-3.5 py-2.5">
+                  <div className="text-xs font-medium text-purple-200/80">Tổng vàng đang có</div>
+                  <div className="mt-0.5 text-lg sm:text-xl font-bold text-white font-mono-num">
                     {formatPhanToChiPhan(totalPhan)}
                   </div>
                 </div>
 
-                <div className="backdrop-blur-md bg-gradient-to-br from-white/[0.12] to-white/[0.04] border border-white/15 rounded-2xl p-4">
-                  <div className="text-sm font-medium text-purple-200/80">Tổng tiền đã bỏ ra</div>
-                  <div className="mt-1 text-2xl sm:text-3xl font-bold text-cyan-200 font-mono-num">
+                <div className="backdrop-blur-md bg-gradient-to-br from-white/[0.12] to-white/[0.04] border border-white/15 rounded-xl px-3.5 py-2.5">
+                  <div className="text-xs font-medium text-purple-200/80">Tổng tiền đã bỏ ra</div>
+                  <div className="mt-0.5 text-lg sm:text-xl font-bold text-cyan-200 font-mono-num">
                     {formatVND(totalCost)}
                   </div>
                 </div>
